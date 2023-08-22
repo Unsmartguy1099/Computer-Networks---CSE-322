@@ -19,18 +19,24 @@ using namespace ns3;
 
 std::string exp_name = "1905114-offline-2-Static";
 int32_t plot2;
-uint32_t nWifi = 10; // 3 , 6, 10 , 13 , 18 
-int32_t packet_rate = 100; //100,200,300,400,500
-int32_t flow = 100; // 10 , 20 , 40 , 70 , 100  -----> x 2
-int32_t range =1; //1,2,3,4,5
+uint32_t nWifi2 = 10; // 3 , 6, 10 , 13 , 18 
+int32_t packet_rate2 = 100; //100,200,300,400,500
+int32_t flow2 = 100; // 10 , 20 , 40 , 70 , 100  -----> x 2
+int32_t range2 =1; //1,2,3,4,5
+int32_t number2 = 1;
 
 
 static void Tracing (Ptr<FlowMonitor> monitor){
   FlowMonitor::FlowStatsContainer stats = monitor->GetFlowStats ();
-  std::ofstream file_out_thoroughput (exp_name+"/net_throughput.dat", std::ios::app);
-  std::ofstream file_out_delivery  (exp_name+"/delivery_ratio.dat",std::ios::app);
+    std::ofstream file_out_thoroughput;
+    std::ofstream file_out_delivery;
+    // Construct the file paths
+    std::string throughput_file_path = exp_name + "/net_throughput"+std::to_string(number2)+".dat";
+    std::string delivery_file_path = exp_name + "/delivery_ratio"+std::to_string(number2)+".dat";
+    // Open files in append mode
+    file_out_thoroughput.open(throughput_file_path, std::ios::app);
+    file_out_delivery.open(delivery_file_path, std::ios::app);
   Time curTime = Now ();
-  
 
   double tot_thr = 0;
   double tot_rx_packets = 0;
@@ -50,17 +56,17 @@ static void Tracing (Ptr<FlowMonitor> monitor){
     flows++;
   }
   if(plot2==1){
-    file_out_thoroughput <<  nWifi << " " << tot_thr << std::endl; 
-    file_out_delivery  <<  nWifi << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
+    file_out_thoroughput <<  nWifi2 << " " << tot_thr << std::endl; 
+    file_out_delivery  <<  nWifi2 << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
   }else if(plot2==2){
-    file_out_thoroughput <<  flow << " " << tot_thr << std::endl; 
-    file_out_delivery  <<  flow << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
+    file_out_thoroughput <<  flow2 << " " << tot_thr << std::endl; 
+    file_out_delivery  <<  flow2 << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
   }else if(plot2==3){
-    file_out_thoroughput <<  packet_rate << " " << tot_thr << std::endl; 
-    file_out_delivery  <<  packet_rate << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
+    file_out_thoroughput <<  packet_rate2 << " " << tot_thr << std::endl; 
+    file_out_delivery  <<  packet_rate2 << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
   }else if(plot2==4){
-    file_out_thoroughput <<  range << " " << tot_thr << std::endl; 
-    file_out_delivery  <<  range << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
+    file_out_thoroughput <<  range2 << " " << tot_thr << std::endl; 
+    file_out_delivery  <<  range2 << " " << (100.0 * tot_delivery)/(tot_rx_packets+tot_drop) << std::endl; 
   }
 
 
@@ -73,12 +79,13 @@ NS_LOG_COMPONENT_DEFINE ("MyRedAredWifiExample");
 int main (int argc, char *argv[])
 {
   //User Parameters
-  // uint32_t nWifi = 10; // 3 , 6, 10 , 13 , 18 
-  // int32_t packet_rate = 100; //100,200,300,400,500
-  // int32_t flow = 100; // 10 , 20 , 40 , 70 , 100  -----> x 2
-  // int32_t range =1; //1,2,3,4,5
-   int32_t number = 0; 
+  int32_t nWifi = 10; // 3 , 6, 10 , 13 , 18 
+  int32_t packet_rate = 100; //100,200,300,400,500
+  int32_t flow = 100; // 10 , 20 , 40 , 70 , 100  -----> x 2
+  int32_t range =1; //1,2,3,4,5
+  int32_t number = 0; 
   int32_t plot = 1;
+ 
 
   CommandLine cmd (__FILE__);
   cmd.AddValue ("nWifi", "Set number nodes", nWifi);
@@ -89,9 +96,16 @@ int main (int argc, char *argv[])
   cmd.AddValue ("plot", "Plot type", plot);
   cmd.Parse (argc,argv);
 
-   exp_name +=std::to_string(number);
+   exp_name +=std::to_string(plot);
 
    plot2=plot;
+   nWifi2 = nWifi;
+   packet_rate2 = packet_rate;
+   flow2 = flow;
+   range2 =range;
+   number2=number;
+
+   std::cout<<plot2<<" "<<nWifi2<<" "<<packet_rate2<<" "<<range2<<std::endl;
 
   //fixed-packet and speed information
   uint32_t  pktSize = 10000000/packet_rate;
@@ -211,24 +225,22 @@ int main (int argc, char *argv[])
   PacketSinkHelper packetSinkHelper ("ns3::TcpSocketFactory", sinkLocalAddress);
 
   ApplicationContainer sinkApps;
-  for (uint32_t i = 0; i < nWifi; ++i)
+  for (int32_t i = 0; i < nWifi; ++i)
     {
-  
+
       sinkApps.Add (packetSinkHelper.Install (wifiStaNodesRight.Get(i)));
     }
   sinkApps.Start (Seconds (1.0));
   sinkApps.Stop (Seconds (6.5));
 
-
-
   ApplicationContainer clientApps;
   int cur_flow_count = 0;
-  for (uint32_t i = 0; i < nWifi; ++i)
+  for (int32_t i = 0; i < nWifi; ++i)
     {
    
       AddressValue remoteAddress (InetSocketAddress (staNodeInterfacesRight.GetAddress(i), 9));
       
-      for(uint32_t j = 0; j < nWifi; ++j)
+      for(int32_t j = 0; j < nWifi; ++j)
       {
         clientHelper.SetAttribute ("Remote", remoteAddress);
         clientApps.Add (clientHelper.Install (wifiStaNodesLeft.Get(j)));
@@ -249,17 +261,6 @@ int main (int argc, char *argv[])
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   Simulator::Stop (Seconds (6.5)); 
-
-  std::string dirToSave = "mkdir -p " + exp_name;
-  std::string dirToDel = "rm -rf " + exp_name;
-  if (system (dirToDel.c_str ()) == -1)
-  {
-      exit (1);
-  }
-  if (system (dirToSave.c_str ()) == -1)
-  {
-      exit (1);
-  }
 
   //&Flow calculation---------------------------------------------------
   Ptr<FlowMonitor> flowMonitor;
