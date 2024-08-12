@@ -157,23 +157,25 @@ public class WriteThreadClient implements Runnable {
                             fileRequest=new FileRequest("files/"+name+"/public/"+filename,"download",name,filename,"public");
                             networkUtil.write(fileRequest);
                             //Thread.sleep(2000);
-                            networkUtil.Receiver("local/"+name+"/"+filename);
+
+                            //networkUtil.Receiver("local/"+name+"/"+filename);
                         }else if(scope==2){
                             System.out.println("        Input file name with extension:");
                             String filename=input.nextLine();
                             fileRequest=new FileRequest("files/"+name+"/private/"+filename,"download",name,filename,"private");
                             networkUtil.write(fileRequest);
                             //Thread.sleep(2000);
-                            networkUtil.Receiver("local/"+name+"/"+filename);
+
+                            //networkUtil.Receiver("local/"+name+"/"+filename);
                         }
                     }else{
                         System.out.println("    Input file name with extension:");
                         String filename=input.nextLine();
-                        fileRequest=new FileRequest("files/"+username+"/public/"+filename,"download",username,filename,"privatepublic");
+                        fileRequest=new FileRequest("files/"+username+"/public/"+filename,"download",name,filename,"public");
                         networkUtil.write(fileRequest);
                         //Thread.sleep(2000);
-                        System.out.println("local/"+name+"/"+filename);
-                        networkUtil.Receiver("local/"+name+"/"+filename);
+                        //System.out.println("local/"+name+"/"+filename);
+                        //networkUtil.Receiver("local/"+name+"/"+filename);
                     }
                 }
             }

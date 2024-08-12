@@ -117,6 +117,7 @@ public class ReadThreadServer implements Runnable {
                                 chat.add("The file <"+obj.getFileName()+"> has arrived");
                                 request.remove(obj.getFileName());
                             }
+                        //networkUtil.write();
                         networkUtil.Receiver(obj.filepath);
                     }else if(obj.getRequest().equals("download")){
                         System.out.println(obj.getFilepath());
@@ -125,6 +126,8 @@ public class ReadThreadServer implements Runnable {
                             System.out.println("requested file exist");
                         else
                             System.out.println("requested file doesn't exist");
+
+                        networkUtil.write(obj);
                         networkUtil.Sender(obj.filepath);
                     }
                 }

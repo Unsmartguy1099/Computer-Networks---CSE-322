@@ -3,6 +3,7 @@ package main;
 
 import util.NetworkUtil;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ReadThreadClient implements Runnable {
@@ -54,6 +55,9 @@ public class ReadThreadClient implements Runnable {
                     for(int i=0;i<obj.getChat().size();i++){
                         System.out.println(obj.getChat().get(i));
                     }
+                } else if(o instanceof FileRequest){
+                    FileRequest obj =(FileRequest) o;
+                    networkUtil.Receiver("local/"+obj.getFrom()+"/"+obj.fileName);
                 }
             }
         } catch (Exception e) {
