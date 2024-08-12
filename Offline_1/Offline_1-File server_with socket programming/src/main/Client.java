@@ -1,27 +1,32 @@
 package main;
 
-
 import util.NetworkUtil;
-
 import java.io.File;
 import java.util.Scanner;
 
 public class Client {
 
+    static String SERVER_ADDRESS = "127.0.0.1";
+    static int SERVER_PORT = 33333;
+
     public Client(String serverAddress, int serverPort) {
         try {
+            //Client Name:
             System.out.print("Enter name of the client: ");
             Scanner scanner = new Scanner(System.in);
             String clientName = scanner.nextLine();
+
+            //Network Utility:
             NetworkUtil networkUtil = new NetworkUtil(serverAddress, serverPort);
-            //FileSendUtil fileSendUtil = new FileSendUtil(serverAddress, serverPort);
-            //FileRecieveUtil fileRecieveUtil = new FileRecieveUtil(serverAddress, serverPort);
-            System.out.println(clientName);
             networkUtil.write(clientName);
+
+            //Write Thread:
             WriteThreadClient writeThreadClient= new WriteThreadClient(networkUtil, clientName);
+
+            //Read Thread:
             new ReadThreadClient(networkUtil,writeThreadClient);
 
-            //creating client directory in server:
+            //Local Directory Creation:
             File filePublic = new File("local/" + clientName);
             if (!filePublic.exists()) {
                 if (filePublic.mkdirs()) {
@@ -37,9 +42,7 @@ public class Client {
     }
 
     public static void main(String args[]) {
-        String serverAddress = "127.0.0.1";
-        int serverPort = 33333;
-        Client client = new Client(serverAddress, serverPort);
+        Client client = new Client(SERVER_ADDRESS, SERVER_PORT);
     }
 }
 

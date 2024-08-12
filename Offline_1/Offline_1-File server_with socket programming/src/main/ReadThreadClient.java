@@ -8,8 +8,6 @@ import java.io.IOException;
 public class ReadThreadClient implements Runnable {
     private Thread thr;
     private NetworkUtil networkUtil;
-//    private FileSendUtil fileSendUtil;
-//    private FileRecieveUtil fileRecieveUtil;
     private WriteThreadClient writeThreadClient;
 
 
@@ -18,8 +16,6 @@ public class ReadThreadClient implements Runnable {
         this.thr = new Thread(this);
         thr.start();
         this.writeThreadClient=writeThreadClient;
-//        this.fileSendUtil=fileSendUtil;
-//        this.fileRecieveUtil=fileRecieveUtil;
     }
 
     public void run() {

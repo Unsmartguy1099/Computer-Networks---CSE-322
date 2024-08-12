@@ -46,8 +46,6 @@ public class NetworkUtil {
         System.out.println("Sending the File to the Server");
         try {
             sendFile(path);
-           // dataInputStream.close();
-           // dataInputStream.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,8 +54,6 @@ public class NetworkUtil {
     public void Receiver(String path) {
         try{
             receiveFile(path);
-           // dataInputStream.close();
-           // dataOutputStream.close();
         }
         catch (Exception e) {
             e.printStackTrace();

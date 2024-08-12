@@ -10,8 +10,6 @@ public class WriteThreadClient implements Runnable {
 
     private Thread thr;
     private NetworkUtil networkUtil;// network util with server
-//    private FileSendUtil fileSendUtil;
-//    private FileRecieveUtil fileRecieveUtil;
     String name;//own name
     public boolean close;
 
@@ -21,8 +19,6 @@ public class WriteThreadClient implements Runnable {
         this.thr = new Thread(this);
         thr.start();
         close=false;
-//        this.fileSendUtil=fileSendUtil;
-//        this.fileRecieveUtil=fileRecieveUtil;
     }
 
     public void run() {
@@ -165,7 +161,7 @@ public class WriteThreadClient implements Runnable {
                         }else if(scope==2){
                             System.out.println("        Input file name with extension:");
                             String filename=input.nextLine();
-                            fileRequest=new FileRequest("files/"+name+"/private/"+filename,"download",name,filename,"privatepublic");
+                            fileRequest=new FileRequest("files/"+name+"/private/"+filename,"download",name,filename,"private");
                             networkUtil.write(fileRequest);
                             //Thread.sleep(2000);
                             networkUtil.Receiver("local/"+name+"/"+filename);
@@ -180,16 +176,6 @@ public class WriteThreadClient implements Runnable {
                         networkUtil.Receiver("local/"+name+"/"+filename);
                     }
                 }
-//                String from = name;
-//                System.out.print("Enter name of the client to send: ");
-//                String to = input.nextLine();
-//                System.out.print("Enter the message: ");
-//                String text = input.nextLine();
-//                Message message = new Message();
-//                message.setFrom(from);
-//                message.setTo(to);
-//                message.setText(text);
-//                networkUtil.write(message);
             }
         } catch (Exception e) {
             System.out.println(e);

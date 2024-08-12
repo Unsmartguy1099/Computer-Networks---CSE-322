@@ -13,10 +13,6 @@ public class ReadThreadServer implements Runnable {
     private Thread thr;
     private NetworkUtil networkUtil;
     public HashMap<String, NetworkUtil> clientMap;
-//    private FileSendUtil fileSendUtil;
-//    public HashMap<String, FileSendUtil> sendMap;
-//    private FileRecieveUtil fileRecieveUtil;
-//    public HashMap<String, FileRecieveUtil> recieceMap;
     public List<String> userList;
     public List<String> chat;
     public List<String> offlineUsers;
@@ -31,10 +27,6 @@ public class ReadThreadServer implements Runnable {
         this.chat=chat;
         this.offlineUsers=offlineUsers;
         this.request=request;
-//        this.sendMap=sendMap;
-//        this.fileSendUtil=fileSendUtil;
-//        this.recieceMap=recieceMap;
-//        this.fileRecieveUtil=fileRecieveUtil;
     }
 
     public void run() {
@@ -43,12 +35,12 @@ public class ReadThreadServer implements Runnable {
                 Object o = networkUtil.read();
                 if (o instanceof Message) {
                     Message obj = (Message) o;
+
                     //Server options-----------------------------------
                     if(obj.getText().equals("userList")){
                         System.out.println("check_userList");
                         UserList userListObject=new UserList(userList,offlineUsers);
                         networkUtil.write(userListObject);
-
                     }else if(obj.getText().equals("public")){
                         System.out.println("check_public");
                         List<String> results = new ArrayList<>();
