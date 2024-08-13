@@ -15,8 +15,6 @@ public class Server {
 
     private ServerSocket serverSocket;
     public HashMap<String, NetworkUtil> clientMap;
-//    public HashMap<String, FileSendUtil> sendMap;
-//    public HashMap<String, FileRecieveUtil> recieceMap;
 
     List<String> userList = new ArrayList<String>();
     List<String> offlineUsers = new ArrayList<String>();
@@ -38,8 +36,6 @@ public class Server {
 
     public void serve(Socket clientSocket) throws IOException, ClassNotFoundException, InterruptedException {
         NetworkUtil networkUtil = new NetworkUtil(clientSocket);
-//        FileSendUtil fileSendUtil=new FileSendUtil(clientSocket);
-//        FileRecieveUtil fileRecieveUtil=new FileRecieveUtil(clientSocket);
         String clientName = (String) networkUtil.read();
         System.out.println(clientName+" arrived");
         if(clientMap.containsKey(clientName)){
@@ -52,8 +48,6 @@ public class Server {
         }
         else {
             clientMap.put(clientName, networkUtil);
-//            sendMap.put(clientName,fileSendUtil);
-//            recieceMap.put(clientName,fileRecieveUtil);
             userList.add(clientName);
             if(offlineUsers.contains(clientName))
                 offlineUsers.remove(clientName);
@@ -79,7 +73,7 @@ public class Server {
                 System.out.println("Directory already exists");
 
             //opening server thread for this specific client:
-             new ReadThreadServer(clientMap, networkUtil,userList,chat,offlineUsers,request);
+            new ReadThreadServer(clientMap, networkUtil,userList,chat,offlineUsers,request);
 
         }
     }

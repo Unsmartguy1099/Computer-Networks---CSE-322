@@ -102,8 +102,6 @@ public class WriteThreadClient implements Runnable {
                     message.setText(text);
                     networkUtil.write(message);
                     System.out.println("Connection terminated");
-                    //Thread.currentThread().interrupt();
-                    // break;
                 }else if(n==5){
                     System.out.println("    press 1 to upload in your private folder");
                     System.out.println("    press 2 to upload in your public folder");
@@ -164,18 +162,12 @@ public class WriteThreadClient implements Runnable {
                             String filename=input.nextLine();
                             fileRequest=new FileRequest("files/"+name+"/private/"+filename,"download",name,filename,"private");
                             networkUtil.write(fileRequest);
-                            //Thread.sleep(2000);
-
-                            //networkUtil.Receiver("local/"+name+"/"+filename);
                         }
                     }else{
                         System.out.println("    Input file name with extension:");
                         String filename=input.nextLine();
                         fileRequest=new FileRequest("files/"+username+"/public/"+filename,"download",name,filename,"public");
                         networkUtil.write(fileRequest);
-                        //Thread.sleep(2000);
-                        //System.out.println("local/"+name+"/"+filename);
-                        //networkUtil.Receiver("local/"+name+"/"+filename);
                     }
                 }
             }
@@ -186,7 +178,7 @@ public class WriteThreadClient implements Runnable {
                 networkUtil.closeConnection();
             } catch (IOException e){
                 System.out.println("connection terminated");
-               // e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }

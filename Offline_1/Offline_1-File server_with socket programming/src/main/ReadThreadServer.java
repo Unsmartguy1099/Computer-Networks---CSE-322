@@ -104,12 +104,6 @@ public class ReadThreadServer implements Runnable {
                         chat.add(obj.getFrom()+" requested: "+obj.getTo());
                         request.add(obj.getTo());
                     }
-                    //not needed below
-//                    String to = obj.getTo();
-//                    NetworkUtil nu = clientMap.get(to);
-//                    if (nu != null) {
-//                        nu.write(obj);
-//                    }
                 }else if(o instanceof FileRequest){
                     FileRequest obj= (FileRequest) o;
                     if(obj.getRequest().equals("upload")){

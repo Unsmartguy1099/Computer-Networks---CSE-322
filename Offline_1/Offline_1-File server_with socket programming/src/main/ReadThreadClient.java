@@ -11,7 +11,6 @@ public class ReadThreadClient implements Runnable {
     private NetworkUtil networkUtil;
     private WriteThreadClient writeThreadClient;
 
-
     public ReadThreadClient(NetworkUtil networkUtil, WriteThreadClient writeThreadClient) {
         this.networkUtil = networkUtil;
         this.thr = new Thread(this);
@@ -66,7 +65,7 @@ public class ReadThreadClient implements Runnable {
             try {
                 networkUtil.closeConnection();
             } catch (IOException e) {
-               // e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
