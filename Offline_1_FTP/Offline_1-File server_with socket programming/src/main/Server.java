@@ -16,13 +16,14 @@ public class Server {
     private ServerSocket serverSocket;
     public HashMap<String, NetworkUtil> clientMap;
 
-    List<String> userList = new ArrayList<String>();
-    List<String> offlineUsers = new ArrayList<String>();
+    SharedUserList sharedUserList;
     List<String> chat = new ArrayList<String>();
     List<String> request =new ArrayList<>();
 
     Server() {
+        sharedUserList = new SharedUserList();
         clientMap = new HashMap<>();
+
         try {
             serverSocket = new ServerSocket(33333);
             while (true) {
@@ -48,9 +49,10 @@ public class Server {
         }
         else {
             clientMap.put(clientName, networkUtil);
-            userList.add(clientName);
-            if(offlineUsers.contains(clientName))
-                offlineUsers.remove(clientName);
+            sharedUserList.getOnlineUsers().add(clientName);
+            if(sharedUserList.getOfflineUsers().contains(clientName))
+                sharedUserList.getOfflineUsers().remove(clientName);
+
             //creating client directory in server:
             File filePublic = new File("files/" + clientName + "/public");
             if (!filePublic.exists()) {
@@ -73,7 +75,7 @@ public class Server {
                 System.out.println("Directory already exists");
 
             //opening server thread for this specific client:
-            new ReadThreadServer(clientMap, networkUtil,userList,chat,offlineUsers,request);
+            new ReadThreadServer(clientMap, networkUtil,chat,request,sharedUserList);
 
         }
     }

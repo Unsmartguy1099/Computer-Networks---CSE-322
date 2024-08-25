@@ -13,20 +13,18 @@ public class ReadThreadServer implements Runnable {
     private Thread thr;
     private NetworkUtil networkUtil;
     public HashMap<String, NetworkUtil> clientMap;
-    public List<String> userList;
+    public SharedUserList sharedUserList;
     public List<String> chat;
-    public List<String> offlineUsers;
     List<String> request ;
 
-    public ReadThreadServer(HashMap<String, NetworkUtil> map, NetworkUtil networkUtil, List<String> userList,List<String> chat,List<String> offlineUsers,List<String> request) {
+    public ReadThreadServer(HashMap<String, NetworkUtil> map, NetworkUtil networkUtil, List<String> chat, List<String> request,SharedUserList sharedUserList) {
         this.clientMap = map;
         this.networkUtil = networkUtil;
         this.thr = new Thread(this);
         thr.start();
-        this.userList=userList;
         this.chat=chat;
-        this.offlineUsers=offlineUsers;
         this.request=request;
+        this.sharedUserList = sharedUserList;
     }
 
     public void run() {
@@ -39,7 +37,7 @@ public class ReadThreadServer implements Runnable {
                     //Server options-----------------------------------
                     if(obj.getText().equals("userList")){
                         System.out.println("check_userList");
-                        UserList userListObject=new UserList(userList,offlineUsers);
+                        UserList userListObject=new UserList(sharedUserList.getOnlineUsers(),sharedUserList.getOfflineUsers());
                         networkUtil.write(userListObject);
                     }else if(obj.getText().equals("public")){
                         System.out.println("check_public");
@@ -81,8 +79,14 @@ public class ReadThreadServer implements Runnable {
                     }else if (obj.getText().equals("logout")){
                         System.out.println(obj.getFrom()+" Logout Server thread");
                         clientMap.remove(obj.getFrom());
+
+                        List<String> onlineUsers = sharedUserList.getOnlineUsers();
+                        List<String> offlineUsers = sharedUserList.getOfflineUsers();
                         offlineUsers.add(obj.getFrom());
-                        userList.remove(obj.getFrom());
+                        onlineUsers.remove(obj.getFrom());
+                        sharedUserList.setOfflineUsers(offlineUsers);
+                        sharedUserList.setOnlineUsers(onlineUsers);
+
                         Message message=new Message();
                         message.setText("logout");
                         message.setFrom("server");
