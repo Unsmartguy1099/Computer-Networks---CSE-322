@@ -25,6 +25,15 @@ public class SharedUserList {
         }
     }
 
+    public void addOnlineUsers(String onlineUser) {
+        lock.lock();
+        try {
+            this.onlineUsers.add(onlineUser);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public void setOnlineUsers(List<String> onlineUsers) {
         lock.lock();
         try {
@@ -38,6 +47,15 @@ public class SharedUserList {
         lock.lock();
         try {
             return offlineUsers;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void addOfflineUsers(String offlineUsers) {
+        lock.lock();
+        try {
+            this.offlineUsers.add(offlineUsers);
         } finally {
             lock.unlock();
         }

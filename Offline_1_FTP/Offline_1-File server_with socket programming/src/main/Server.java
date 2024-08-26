@@ -50,7 +50,7 @@ public class Server {
         }
         else {
             clientMap.put(clientName, networkUtil);
-            sharedUserList.getOnlineUsers().add(clientName);
+            sharedUserList.addOnlineUsers(clientName);
             if(sharedUserList.getOfflineUsers().contains(clientName))
                 sharedUserList.getOfflineUsers().remove(clientName);
 
