@@ -30,13 +30,14 @@ public class WriteThreadClient implements Runnable {
                     Thread.currentThread().interrupt();
                     break;
                 }
+                    //login         ------------------------------------------------
                 System.out.println("Press 1 to see user list");
                 System.out.println("Press 2 to lookup files");
-                System.out.println("Press 3 to view messages");
-                System.out.println("Press 4 to logout");
-                System.out.println("Press 5 to upload file");
+                //System.out.println("Press 3 to view messages");
+                    System.out.println("Press 4 to logout");//----------------------
+                    System.out.println("Press 5 to upload file");//-----------------
                 System.out.println("Press 6 to see other users' public files");
-                System.out.println("Press 7 to Request a file");
+                    System.out.println("Press 7 to Request a file");//--------------
                 System.out.println("Press 8 to download a file");
                 int n=input.nextInt();
                 input.nextLine();
@@ -83,16 +84,18 @@ public class WriteThreadClient implements Runnable {
                         message.setText(text);
                         networkUtil.write(message);
                     }
-                }else if(n==3){
-                    String from = name;
-                    String to = "server";
-                    String text = "chat";
-                    Message message = new Message();
-                    message.setFrom(from);
-                    message.setTo(to);
-                    message.setText(text);
-                    networkUtil.write(message);
-                }else if(n==4){
+                }
+//                else if(n==3){
+//                    String from = name;
+//                    String to = "server";
+//                    String text = "chat";
+//                    Message message = new Message();
+//                    message.setFrom(from);
+//                    message.setTo(to);
+//                    message.setText(text);
+//                    networkUtil.write(message);
+ //               }
+            else if(n==4){
                     String from = name;
                     String to = "server";
                     String text = "logout";
@@ -110,6 +113,7 @@ public class WriteThreadClient implements Runnable {
                     System.out.println("Type file name you want to upload:");
                     String filename=input.nextLine();
                     FileRequest fileRequest;
+                    //step 1: Call server to be ready to receive file (Send object)
                     if(scope==1){
                         fileRequest=new FileRequest("files/"+name+"/private/"+filename,"upload",name,filename,"private");
                         networkUtil.write(fileRequest);
@@ -117,6 +121,7 @@ public class WriteThreadClient implements Runnable {
                         fileRequest=new FileRequest("files/"+name+"/public/"+filename,"upload",name,filename,"public");
                         networkUtil.write(fileRequest);
                     }
+                    //step 2: Send file (Send File)
                     networkUtil.Sender("local/"+name+"/"+filename);
                 }else if(n==6){
                     System.out.println("Lookup public files of user:");
@@ -131,14 +136,18 @@ public class WriteThreadClient implements Runnable {
                     networkUtil.write(message);
                 }else if(n==7){
                     System.out.println("Type the name of the file you want with extension:");
-                    String username =input.nextLine();
+                    String filename =input.nextLine();
+                    System.out.println("Type a short description of the file:");
+                    String description =input.nextLine();
                     String from = name;
-                    String to = username;
+                    String to = "server";
                     String text = "req";
                     Message message = new Message();
                     message.setFrom(from);
                     message.setTo(to);
                     message.setText(text);
+                    message.setFileName(filename);
+                    message.setDescription(description);
                     networkUtil.write(message);
                 }else if(n==8){
                     System.out.println("Type user name:");

@@ -14,16 +14,14 @@ public class ReadThreadServer implements Runnable {
     private NetworkUtil networkUtil;
     public HashMap<String, NetworkUtil> clientMap;
     public SharedUserList sharedUserList;
-    public List<String> chat;
-    List<String> request ;
+    public SharedFileRequests sharedFileRequests;
 
-    public ReadThreadServer(HashMap<String, NetworkUtil> map, NetworkUtil networkUtil, List<String> chat, List<String> request,SharedUserList sharedUserList) {
+    public ReadThreadServer(HashMap<String, NetworkUtil> map, NetworkUtil networkUtil, SharedFileRequests sharedFileRequests,SharedUserList sharedUserList) {
         this.clientMap = map;
         this.networkUtil = networkUtil;
         this.thr = new Thread(this);
         thr.start();
-        this.chat=chat;
-        this.request=request;
+        this.sharedFileRequests = sharedFileRequests;
         this.sharedUserList = sharedUserList;
     }
 
@@ -72,11 +70,13 @@ public class ReadThreadServer implements Runnable {
                         }
                         FileList fileListObject=new FileList(results,"Local");
                         networkUtil.write(fileListObject);
-                    }else if (obj.getText().equals("chat")){
-                        System.out.println("check_chat");
-                        Chat chatObject= new Chat(chat);
-                        networkUtil.write(chatObject);
-                    }else if (obj.getText().equals("logout")){
+                    }
+//                    else if (obj.getText().equals("chat")){
+//                        System.out.println("check_chat");
+//                        Chat chatObject= new Chat(chat);
+//                        networkUtil.write(chatObject);
+//                    }
+                    else if (obj.getText().equals("logout")){
                         System.out.println(obj.getFrom()+" Logout Server thread");
                         clientMap.remove(obj.getFrom());
 
@@ -105,17 +105,26 @@ public class ReadThreadServer implements Runnable {
                         FileList fileListObject=new FileList(results,obj.getTo()+" public ");
                         networkUtil.write(fileListObject);
                     }else if( obj.getText().equals("req")){
-                        chat.add(obj.getFrom()+" requested: "+obj.getTo());
-                        request.add(obj.getTo());
+                        HashMap<String, FileRequstMessage> requestMap = sharedFileRequests.getRequestMap();
+                        String filename = obj.getFileName();
+                        if(requestMap.containsKey(filename)){
+                            requestMap.get(obj.getFileName()).setSenderList(obj.getFrom());
+                        }else{
+                            requestMap.put(obj.getFileName(),new FileRequstMessage(obj.getFileName(),obj.getDescription()));
+                            requestMap.get(obj.getFileName()).setSenderList(obj.getFrom());
+                        }
                     }
                 }else if(o instanceof FileRequest){
                     FileRequest obj= (FileRequest) o;
                     if(obj.getRequest().equals("upload")){
-                        if(request.contains(obj.getFileName())&&obj.scope.equals("public")) {
-                                chat.add("The file <"+obj.getFileName()+"> has arrived");
-                                request.remove(obj.getFileName());
+                        HashMap<String, FileRequstMessage> requestMap = sharedFileRequests.getRequestMap();
+                        if(requestMap.containsKey(obj.getFileName())&&obj.scope.equals("public")) {
+                                requestMap.get(obj.getFileName()).setResolved(true);
+                                requestMap.get(obj.getFileName()).setUploader(obj.getFrom());
+                                for(String sender : requestMap.get(obj.getFileName()).getSenderList()){
+                                    clientMap.get(sender).write(requestMap.get(obj.getFileName()));
+                                }
                             }
-                        //networkUtil.write();
                         networkUtil.Receiver(obj.filepath);
                     }else if(obj.getRequest().equals("download")){
                         System.out.println(obj.getFilepath());
@@ -124,7 +133,6 @@ public class ReadThreadServer implements Runnable {
                             System.out.println("requested file exist");
                         else
                             System.out.println("requested file doesn't exist");
-
                         networkUtil.write(obj);
                         networkUtil.Sender(obj.filepath);
                     }

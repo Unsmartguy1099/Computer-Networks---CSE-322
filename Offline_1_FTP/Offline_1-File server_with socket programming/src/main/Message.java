@@ -6,6 +6,9 @@ public class Message implements Serializable {
     private String from;
     private String to;
     private String text;
+    private String fileName;
+
+    private String description;
 
     public Message() {
     }
@@ -32,5 +35,20 @@ public class Message implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

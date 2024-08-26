@@ -17,11 +17,12 @@ public class Server {
     public HashMap<String, NetworkUtil> clientMap;
 
     SharedUserList sharedUserList;
-    List<String> chat = new ArrayList<String>();
-    List<String> request =new ArrayList<>();
+    SharedFileRequests sharedFileRequests;
 
     Server() {
         sharedUserList = new SharedUserList();
+        sharedFileRequests = new SharedFileRequests();
+
         clientMap = new HashMap<>();
 
         try {
@@ -75,7 +76,7 @@ public class Server {
                 System.out.println("Directory already exists");
 
             //opening server thread for this specific client:
-            new ReadThreadServer(clientMap, networkUtil,chat,request,sharedUserList);
+            new ReadThreadServer(clientMap, networkUtil,sharedFileRequests,sharedUserList);
 
         }
     }

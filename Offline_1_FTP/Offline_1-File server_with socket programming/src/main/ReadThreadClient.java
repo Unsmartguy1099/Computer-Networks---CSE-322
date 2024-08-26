@@ -48,12 +48,9 @@ public class ReadThreadClient implements Runnable {
                     for(int i=0;i<obj.getFiles().size();i++){
                         System.out.println(obj.getFiles().get(i));
                     }
-                } else if(o instanceof Chat){
-                    Chat obj =(Chat) o;
-                    System.out.println("Chat:--------------");
-                    for(int i=0;i<obj.getChat().size();i++){
-                        System.out.println(obj.getChat().get(i));
-                    }
+                } else if(o instanceof FileRequstMessage){
+                    FileRequstMessage obj =(FileRequstMessage) o;
+                    System.out.println("The file " + obj.getFileName() + " you requested is uploaded by "+ obj.getUploader());
                 } else if(o instanceof FileRequest){
                     FileRequest obj =(FileRequest) o;
                     networkUtil.Receiver("local/"+obj.getFrom()+"/"+obj.fileName);
